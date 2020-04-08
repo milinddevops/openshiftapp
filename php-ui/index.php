@@ -2,6 +2,7 @@
 <html lang="en">
 <?php
  include 'head.php';
+ header('Access-Control-Allow-Origin: *');
 ?>
 <body ng-app="myApp">
     <div class="container" ng-controller="appController">
@@ -61,7 +62,7 @@
             </div>
         </div>
     </div>
-   
+
 </body>
 
 </html>
