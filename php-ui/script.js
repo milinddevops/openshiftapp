@@ -21,7 +21,7 @@ app.controller('appController', function($scope,$http) {
 		$scope.token='';
 	});
     $scope.login = function (){
-	  	$http.post($scope.userTarget+"/api/authenticate",$scope.loginform).success(function(data, status) {
+	  	$http.post($scope.userTarget+"/authenticate",$scope.loginform).success(function(data, status) {
             if(data['success']==true){
             	alert('Login successful, click link to get friends list.');
             	$scope.token=data.token;
@@ -32,7 +32,7 @@ app.controller('appController', function($scope,$http) {
         });
 	};
 	$scope.getFriendsList=function(){
-	    $http.get($scope.userTarget+"/api/users?token="+$scope.token).success(function(data, status) {
+	    $http.get($scope.userTarget+"/users?token="+$scope.token).success(function(data, status) {
 	            console.log(data);
 	            $scope.friends=data;
 	            $scope.currentPage='friends';
