@@ -8,18 +8,18 @@ var bodyParser  = require('body-parser');
 var morgan      = require('morgan');
 var mongoose    = require('mongoose');
 
-var jwt    = require('jsonwebtoken'); 
-var config = require('./config'); 
-var User   = require('./app/models/user'); 
+var jwt    = require('jsonwebtoken');
+var config = require('./config');
+var User   = require('./app/models/user');
 var cors = require('cors');
 
 request = require('request-json');
 
 var client = request.createClient(process.env.EMAIL_APPLICATION_DOMAIN);
 
-var port = process.env.PORT || 8080; 
-mongoose.connect(config.database); 
-app.set('superSecret', config.secret); 
+var port = process.env.PORT || 8080;
+mongoose.connect(config.database, { useMongoClient: true }); 
+app.set('superSecret', config.secret);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -32,11 +32,11 @@ app.use(cors());
 
 app.get('/setup', function(req, res) {
 
-	
-	var nick = new User({ 
-		username: 'demo', 
+
+	var nick = new User({
+		username: 'demo',
 		password: 'demo',
-		admin: true 
+		admin: true
 	});
 	nick.save(function(err) {
 		if (err) throw err;
@@ -50,7 +50,7 @@ app.get('/', function(req, res) {
 	res.send('API Works!');
 });
 
-var apiRoutes = express.Router(); 
+var apiRoutes = express.Router();
 
 
 apiRoutes.post('/authenticate', function(req, res) {
@@ -83,7 +83,7 @@ apiRoutes.post('/authenticate', function(req, res) {
 					message: 'Enjoy your token!',
 					token: token
 				});
-			}		
+			}
 
 		}
 
@@ -93,33 +93,33 @@ apiRoutes.post('/authenticate', function(req, res) {
 
 apiRoutes.use(function(req, res, next) {
 
-	
+
 	var token = req.body.token || req.param('token') || req.headers['x-access-token'];
 
-	
+
 	if (token) {
 
-		
-		jwt.verify(token, app.get('superSecret'), function(err, decoded) {			
+
+		jwt.verify(token, app.get('superSecret'), function(err, decoded) {
 			if (err) {
-				return res.json({ success: false, message: 'Failed to authenticate token.' });		
+				return res.json({ success: false, message: 'Failed to authenticate token.' });
 			} else {
-				
-				req.decoded = decoded;	
+
+				req.decoded = decoded;
 				next();
 			}
 		});
 
 	} else {
 
-		
-		return res.status(403).send({ 
-			success: false, 
+
+		return res.status(403).send({
+			success: false,
 			message: 'No token provided.'
 		});
-		
+
 	}
-	
+
 });
 
 apiRoutes.get('/', function(req, res) {
@@ -141,7 +141,7 @@ app.post('/users', function(req, res) {
 		}
 		console.log('data',data);
 		client.post('/email/', data, function(err, response, body) {
-  			console.log('email sent!');	
+  			console.log('email sent!');
 		});
 	});
 	res.json({ success: true });
