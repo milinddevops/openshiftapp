@@ -1,6 +1,6 @@
 /*  Dummy comments */
 var app = angular.module('myApp', []);
-app.controller('appController', function($scope,$http) { 
+app.controller('appController', function($scope,$http) {
 	$scope.currentPage='register';
 	$scope.friends=[];
 	$scope.form={
@@ -21,7 +21,7 @@ app.controller('appController', function($scope,$http) {
 		$scope.token='';
 	});
     $scope.login = function (){
-	  	$http.post($scope.userTarget+"/authenticate",$scope.loginform).success(function(data, status) {
+	  	$http.post($scope.userTarget+"/api/authenticate",$scope.loginform).success(function(data, status) {
             if(data['success']==true){
             	alert('Login successful, click link to get friends list.');
             	$scope.token=data.token;
@@ -32,18 +32,18 @@ app.controller('appController', function($scope,$http) {
         });
 	};
 	$scope.getFriendsList=function(){
-	    $http.get($scope.userTarget+"/users?token="+$scope.token).success(function(data, status) {
+	    $http.get($scope.userTarget+"/api/users?token="+$scope.token).success(function(data, status) {
 	            console.log(data);
 	            $scope.friends=data;
 	            $scope.currentPage='friends';
-            });	
+            });
 	};
 	$scope.getTweets=function(user){
 	   $http.get($scope.twitterTarget+"/simple-service-webapp/api/tweets?name="+user).success(function(data, status) {
 		    console.log(data);
 	            $scope.tweets=data.tweets;
 	            $scope.currentPage='tweets';
-            });	
+            });
 	}
 	$scope.register = function (){
 	  	$http.post($scope.userTarget+"/users", $scope.form).success(function(data, status) {
